@@ -54,13 +54,18 @@ def main():
 	st.title('Loan Approval')
 
 	model = load_model()
-	df = form()
-	st.write('Creditability')
-	if df is not None:
-		prediction = predict_creditability(model, df)
-		if prediction == 0:
-			st.write('Not eligible')
-		else:
-			st.write('Eligible')
+	col_1, col_2 = st.columns(2)
+	with col_1:
+		df = form()
 
+	with col_2:
+		st.write('Creditability')
+		if df is not None:
+			prediction = predict_creditability(model, df)
+			if prediction == 0:
+				st.write('Not eligible')
+			else:
+				st.write('Eligible')
+
+st.set_page_config(layout="wide")
 main()
