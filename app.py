@@ -4,8 +4,12 @@ import numpy as np
 import pickle
 
 def load_model():
-	with open('../model/best_model.pkl', 'rb') as file:
+	with open('model/model.pickle', 'rb') as file:
 	   return pickle.load(file)
+
+def load_scaler():
+	with open('scaler/standard_scaler.pickle', 'rb') as file:
+		return pickle.load(file)
 
 def form():
 	form = st.form('my_form')
@@ -26,7 +30,7 @@ def form():
 				index=0,
 			)
 			purporse = st.number_input('Purpose', value=0)
-			credit_amount = st.number_input('Credit_Amount', value=0)
+			credit_amount = st.number_input('Credit Amount', value=0)
 			value_savings = st.selectbox(
 				'Saving/Stock value',
 				['None', 'Below 100DM', '100-500DM', '500-1000DM', 'Above 1000DM'],
@@ -64,7 +68,7 @@ def form():
 				['None', 'Car', 'Life Insurance', 'Real Estate'],
 				index=0,
 			)
-			age = st.number_input('Age_years', value=0)
+			age = st.number_input('Age years', value=0)
 			concurrent_credits = st.selectbox(
 				'Concurrent credits',
 				['Other Banks', 'Dept. Store', 'None'],
@@ -127,13 +131,15 @@ def form():
 
 		return df
 
-def predict_creditability(model, df):
+def predict_creditability(model, scaler, df):
+	df = scaler.transform(df)
 	return model.predict(df)
 
 def main():
 	st.title('Loan Approval')
 
 	model = load_model()
+	scaler = load_scaler()
 	col_1, col_2 = st.columns(2)
 	with col_1:
 		df = form()
@@ -141,7 +147,7 @@ def main():
 	with col_2:
 		st.write('Creditability')
 		if df is not None:
-			prediction = predict_creditability(model, df)
+			prediction = predict_creditability(model, scaler, df)
 			if prediction == 0:
 				st.write('Not eligible')
 			else:
