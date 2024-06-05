@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
 import pickle
+import matplotlib.pyplot as plt
 from sklearn.utils import resample, shuffle
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, classification_report
 from sklearn.ensemble import RandomForestClassifier
 
 class DataPreprocessing:
@@ -29,6 +30,9 @@ class DataPreprocessing:
 			random_state=42
 		)
 		self.df = pd.concat([credible, non_credible])
+	
+	def shuffle(self):
+		self.df = shuffle(self.df)
 
 class Model:
 	def __init__(self, df):
@@ -78,7 +82,12 @@ class Model:
 
 	# Evaluation
 	def report(self):
+		cm = confusion_matrix(self.y_test, self.y_predict, labels=self.model.classes_)
+		disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=self.model.classes_)
+
 		print(f'Classification Report:\n{classification_report(self.y_test, self.y_predict)}')
+		disp.plot()
+		plt.show()
 
 	def save_model(self, model, path):
 		with open(path, 'wb') as file:
@@ -89,6 +98,7 @@ def data_preprocessing(file_path):
 	data_prep.load_data()
 	data_prep.drop_na()
 	data_prep.resampling()
+	data_prep.shuffle()
 
 	return data_prep
 
