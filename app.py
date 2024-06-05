@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
-from streamlit_extras.stylable_container import stylable_container
 
 def load_model():
 	with open('../model/best_model.pkl', 'rb') as file:
