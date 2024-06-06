@@ -3,13 +3,24 @@ import pandas as pd
 import numpy as np
 import pickle
 
-def load_model():
-	with open('model/model.pickle', 'rb') as file:
-	   return pickle.load(file)
+st.set_page_config(
+	page_title="Prediction Demo",
+	layout="wide"
+)
 
-def load_scaler():
+@st.cache_data
+def load_data():
+	load_state = st.text('Loading model...')
+	with open('model/model.pickle', 'rb') as file:
+		load_state.text('Loading model... Done!')
+		model = pickle.load(file)
+	
+	load_state = st.text('Loading scaler...')
 	with open('scaler/standard_scaler.pickle', 'rb') as file:
-		return pickle.load(file)
+		load_state.text('Loading scaler... Done!')
+		scaler = pickle.load(file)
+	
+	return model, scaler
 
 def form():
 	form = st.form('my_form')
@@ -136,10 +147,9 @@ def predict_creditability(model, scaler, df):
 	return model.predict(df)
 
 def main():
-	st.title('Loan Approval')
+	MODEL, SCALER = load_data()
 
-	model = load_model()
-	scaler = load_scaler()
+	st.title('Loan Approval')
 	col_1, col_2 = st.columns(2)
 	with col_1:
 		df = form()
@@ -147,11 +157,10 @@ def main():
 	with col_2:
 		st.write('Creditability')
 		if df is not None:
-			prediction = predict_creditability(model, scaler, df)
+			prediction = predict_creditability(model=MODEL, scaler=SCALER, df=df)
 			if prediction == 0:
 				st.write('Not eligible')
 			else:
 				st.write('Eligible')
 
-st.set_page_config(layout="wide")
 main()
