@@ -19,5 +19,10 @@ def main():
 		5. Vincen		 
 	""")
 
+	if st.button('Explore the Data?'):
+		st.switch_page('pages/1_Exploratory_Data_Analysis.py')
+	if st.button('Use Demo'):
+		st.switch_page('pages/2_Prediction_Demo.py')
+
 
 main()
