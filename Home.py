@@ -20,12 +20,18 @@ def main():
 	""")
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 55984ea558587e1eb662bd78074fcf6f1c3ae5a7
 	if st.button('Explore the Data?'):
 		st.switch_page('pages/1_Exploratory_Data_Analysis.py')
 	if st.button('Use Demo'):
 		st.switch_page('pages/2_Prediction_Demo.py')
 
+<<<<<<< HEAD
 =======
 >>>>>>> 1d3ec723eac47e244b6228e6d96167f4455457de
+=======
+>>>>>>> 55984ea558587e1eb662bd78074fcf6f1c3ae5a7
 
 main()
