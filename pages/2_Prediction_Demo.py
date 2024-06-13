@@ -2,7 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+<<<<<<< HEAD
 import time
+=======
+>>>>>>> 1d3ec723eac47e244b6228e6d96167f4455457de
 
 st.set_page_config(
 	page_title="Prediction Demo",
@@ -11,6 +14,7 @@ st.set_page_config(
 
 @st.cache_data
 def load_data():
+<<<<<<< HEAD
 	st.spinner('Loading model...')
 	with open('model/model.pickle', 'rb') as file:
 		model = pickle.load(file)
@@ -20,6 +24,17 @@ def load_data():
 	with open('scaler/standard_scaler.pickle', 'rb') as file:
 		scaler = pickle.load(file)
 		st.success('Scaler loaded!!')
+=======
+	load_state = st.text('Loading model...')
+	with open('model/model.pickle', 'rb') as file:
+		load_state.text('Loading model... Done!')
+		model = pickle.load(file)
+	
+	load_state = st.text('Loading scaler...')
+	with open('scaler/standard_scaler.pickle', 'rb') as file:
+		load_state.text('Loading scaler... Done!')
+		scaler = pickle.load(file)
+>>>>>>> 1d3ec723eac47e244b6228e6d96167f4455457de
 	
 	return model, scaler
 
@@ -41,11 +56,15 @@ def form():
 				['Delayed', 'Other Credits', 'Paid Up', 'No Problem with Current Credits', 'Previous Credits Paid'],
 				index=0,
 			)
+<<<<<<< HEAD
 			purpose = st.selectbox(
 				'Purpose',
 				['New Car', 'Used Car', 'Furniture', 'Radio/TV', 'Appliances', 'Repair', 'Vacation', 'Retraining', 'Business', 'Other'],
 				index=0,
 			)
+=======
+			purporse = st.number_input('Purpose', value=0)
+>>>>>>> 1d3ec723eac47e244b6228e6d96167f4455457de
 			credit_amount = st.number_input('Credit Amount', value=0)
 			value_savings = st.selectbox(
 				'Saving/Stock value',
@@ -127,8 +146,12 @@ def form():
 			['No Account', 'No Balance', 'Below 200DM', '200DM or Above'].index(acc_balance)+1,
 			credit_monthly,
 			['Delayed', 'Other Credits', 'Paid Up', 'No Problem with Current Credits', 'Previous Credits Paid'].index(payment_status)+1,
+<<<<<<< HEAD
 			['New Car', 'Used Car', 'Furniture', 'Radio/TV', 'Appliances', 'Repair', 'Vacation', 'Retraining', 'Business', 'Other'].index(purpose), 
 			credit_amount,
+=======
+			purporse, credit_amount,
+>>>>>>> 1d3ec723eac47e244b6228e6d96167f4455457de
 			['None', 'Below 100DM', '100-500DM', '500-1000DM', 'Above 1000DM'].index(value_savings)+1,
 			['Unemployed', '<1 Year', '1-4 Year', '4-7 Year', 'Above 7 Year'].index(current_employment)+1,
 			['Above 35%', '25-35%', '20-25%', 'Below 20%'].index(instalment_per_cent)+1,
