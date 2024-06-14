@@ -3,6 +3,6 @@ import numpy as np
 import streamlit as st
 
 st.set_page_config(
-	page_title="Exploratory Data Analysis",
+	page_title="Train Your Model",
 	layout="wide"
 )

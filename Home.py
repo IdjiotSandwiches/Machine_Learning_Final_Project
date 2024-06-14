@@ -8,7 +8,13 @@ st.set_page_config(
 	layout="wide"
 )
 
+def load_data():
+	if 'df' not in st.session_state:
+		st.session_state.df = pd.read_csv('dataset/german.csv', sep=';')
+
 def main():
+	load_data()
+	print(st.session_state.df)
 	st.title('Machine Learning Project')
 	st.write('Member:')
 	st.markdown("""
@@ -19,10 +25,10 @@ def main():
 		5. Vincen		 
 	""")
 
-	if st.button('Explore the Data?'):
+	if st.button('Explore the Data? ➤'):
 		st.switch_page('pages/1_Exploratory_Data_Analysis.py')
-	if st.button('Use Demo'):
+	if st.button('Use Demo ➤'):
 		st.switch_page('pages/2_Prediction_Demo.py')
 
-
-main()
+if __name__ == '__main__':
+	main()
