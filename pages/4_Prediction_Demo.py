@@ -21,8 +21,8 @@ def load_data(is_user_model, is_user_scaler):
 	else:
 		scaler = load_default_scaler()
 
-	# st.warning('No model!!') if model is None else st.success('Model loaded!!')
-	# st.warning('No scaler!!') if scaler is None else st.success('Scaler loaded!!')
+	model_condition = st.warning('No model!!') if model is None else st.success('Model loaded!!')
+	scaler_condition = st.warning('No scaler!!') if scaler is None else st.success('Scaler loaded!!')
 	return model, scaler
 
 def load_default_model():
@@ -158,7 +158,7 @@ def form():
 				index=0,
 	 		)
 
-		submitted = st.form_submit_button('Submit')
+		submitted = st.form_submit_button('Predict')
 	if submitted:
 		df = [[
 			['No Account', 'No Balance', 'Below 200DM', '200DM or Above'].index(acc_balance)+1,
@@ -198,6 +198,9 @@ def is_folder_empty(folder_path):
 
 def main():
 	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
+	st.header('Choose your own model and scaler')
+	st.text('*If has not train a model the button will be disabled')
+	st.text('*Default model: Random Forest Classifier, Default scaler: Standard Scaler')
 	col_model, col_scaler =  st.columns(2)
 	with col_model:
 		is_user_model = st.toggle('Use your trained model', disabled=is_user_model_empty)
