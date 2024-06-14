@@ -41,8 +41,11 @@ def main():
 	resampling_data(data)
 	shuffle_data(data)
 	
-	if 'prep_data' not in st.session_state:
-		st.session_state.prep_data = data
+	# Session storage
+	st.session_state.prep_data = data
+
+	if st.button('Train your model? ➤'):
+		st.switch_page('pages/3_Train_Your_Model.py')
 
 def drop_na(data):
 	st.write('1. Drop NULL value')
