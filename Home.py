@@ -14,7 +14,6 @@ def load_data():
 
 def main():
 	load_data()
-	print(st.session_state.df)
 	st.title('Machine Learning Project')
 	st.write('Member:')
 	st.markdown("""
