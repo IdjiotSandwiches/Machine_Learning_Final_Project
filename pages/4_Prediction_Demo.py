@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
-import time
 
 st.set_page_config(
 	page_title="Prediction Demo",
