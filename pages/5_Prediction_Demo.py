@@ -3,25 +3,62 @@ import pandas as pd
 import numpy as np
 import pickle
 import time
+import os
 
 st.set_page_config(
 	page_title="Prediction Demo",
 	layout="wide"
 )
 
-@st.cache_data
-def load_data():
-	st.spinner('Loading model...')
-	with open('model/model.pickle', 'rb') as file:
-		model = pickle.load(file)
-		st.success('Model loaded!!')
-	
-	st.spinner('Loading scaler...')
-	with open('scaler/standard_scaler.pickle', 'rb') as file:
-		scaler = pickle.load(file)
-		st.success('Scaler loaded!!')
-	
+def load_data(is_user_model, is_user_scaler):
+	if is_user_model:
+		model = load_user_model()
+	else:
+		model = load_default_model()
+
+	if is_user_scaler:
+		scaler = load_user_scaler()
+	else:
+		scaler = load_default_scaler()
+
+	model_condition = st.warning('No model!!') if model is None else st.success('Model loaded!!')
+	scaler_condition = st.warning('No scaler!!') if scaler is None else st.success('Scaler loaded!!')
 	return model, scaler
+
+def load_default_model():
+	with open('model/default.pickle', 'rb') as file:
+		model = pickle.load(file)
+	return model
+
+def load_default_scaler():
+	with open('scaler/default.pickle', 'rb') as file:
+		scaler = pickle.load(file)
+	return scaler
+
+def load_user_model():
+	folder_path = 'model/user_trained'
+	file_list = os.listdir(folder_path)
+	pickle_files = [f for f in file_list if f.endswith('.pickle')]
+
+	model = []
+	for pickle_file in pickle_files:
+		file_path = os.path.join(folder_path, pickle_file)
+		with open(file_path, 'rb') as file:
+			model.append(pickle.load(file))
+	return model
+
+def load_user_scaler():
+	folder_path = 'scaler/user_trained'
+	file_list = os.listdir(folder_path)
+	pickle_files = [f for f in file_list if f.endswith('.pickle')]
+
+	scaler = []
+	for pickle_file in pickle_files:
+		file_path = os.path.join(folder_path, pickle_file)
+		with open(file_path, 'rb') as file:
+			scaler.append(pickle.load(file))
+		print(scaler)
+	return scaler
 
 def form():
 	form = st.form('my_form')
@@ -121,7 +158,7 @@ def form():
 				index=0,
 	 		)
 
-		submitted = st.form_submit_button('Submit')
+		submitted = st.form_submit_button('Predict')
 	if submitted:
 		df = [[
 			['No Account', 'No Balance', 'Below 200DM', '200DM or Above'].index(acc_balance)+1,
@@ -152,21 +189,53 @@ def predict_creditability(model, scaler, df):
 	df = scaler.transform(df)
 	return model.predict(df)
 
-def main():
-	MODEL, SCALER = load_data()
+def is_folder_empty(folder_path):
+	if not os.path.exists(folder_path):
+		print(f"The folder {folder_path} does not exist.")
+		return False
+	dir = os.listdir(folder_path)
+	return True if not dir else False
 
-	st.title('Loan Approval')
-	col_1, col_2 = st.columns(2)
-	with col_1:
+def main():
+	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
+	st.header('Choose your own model and scaler')
+	st.text('*If has not train a model the button will be disabled')
+	st.text('*Default model: Random Forest Classifier, Default scaler: Standard Scaler')
+	col_model, col_scaler =  st.columns(2)
+	with col_model:
+		is_user_model = st.toggle('Use your trained model', disabled=is_user_model_empty)
+	with col_scaler:
+		is_user_scaler = st.toggle('Use your trained scaler', disabled=is_user_scaler_empty)
+
+	MODELS, SCALERS = load_data(
+		is_user_model=is_user_model,
+		is_user_scaler=is_user_scaler
+	)
+
+	model = MODELS if not is_user_model else st.selectbox(
+		'Choose your model',
+		MODELS
+	)
+
+	scaler = SCALERS if not is_user_scaler else st.selectbox(
+		'Choose your scaler',
+		SCALERS
+	)
+
+	st.header('Loan Approval')
+	col_form, col_prediction = st.columns(2)
+	with col_form:
 		df = form()
 
-	with col_2:
+	with col_prediction:
 		st.write('Creditability')
 		if df is not None:
-			prediction = predict_creditability(model=MODEL, scaler=SCALER, df=df)
+			prediction = predict_creditability(model=model, scaler=scaler, df=df)
 			if prediction == 0:
-				st.write('Not eligible')
+				st.warning('Not eligible')
 			else:
-				st.write('Eligible')
+				st.success('Eligible')
 
-main()
+if __name__ == '__main__':
+	main()
+
