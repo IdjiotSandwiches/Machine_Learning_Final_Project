@@ -27,8 +27,8 @@ def main():
 	if st.button('Explore the Data? ➤'):
 		st.switch_page('pages/1_Exploratory_Data_Analysis.py')
     
-	if st.button('Use Demo'):
-		st.switch_page('pages/3_Prediction_Demo.py')
+	if st.button('Use Demo ➤'):
+		st.switch_page('pages/5_Prediction_Demo.py')
 
 if __name__ == '__main__':
 	main()
