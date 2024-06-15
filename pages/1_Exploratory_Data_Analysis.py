@@ -31,7 +31,7 @@ def description():
    st.markdown(risk_2)
    st.markdown("For futher information visit:")
    if st.button('Dataset Encoding'):
-      st.switch_page('pages/2_Description_page.py')
+      st.switch_page('pages/2_Description_Page.py')
     
 def preview(df):
    st.write('Desciptive Analysis')
