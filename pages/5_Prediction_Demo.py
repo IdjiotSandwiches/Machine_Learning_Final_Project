@@ -20,9 +20,6 @@ def load_data(is_user_model, is_user_scaler):
 		scaler = load_user_scaler()
 	else:
 		scaler = load_default_scaler()
-
-	model_condition = st.warning('No model!!') if model is None else st.success('Model loaded!!')
-	scaler_condition = st.warning('No scaler!!') if scaler is None else st.success('Scaler loaded!!')
 	return model, scaler
 
 def load_default_model():
@@ -40,11 +37,11 @@ def load_user_model():
 	file_list = os.listdir(folder_path)
 	pickle_files = [f for f in file_list if f.endswith('.pickle')]
 
-	model = []
+	model = {}
 	for pickle_file in pickle_files:
 		file_path = os.path.join(folder_path, pickle_file)
 		with open(file_path, 'rb') as file:
-			model.append(pickle.load(file))
+			model[pickle_file] = pickle.load(file)
 	return model
 
 def load_user_scaler():
@@ -52,11 +49,11 @@ def load_user_scaler():
 	file_list = os.listdir(folder_path)
 	pickle_files = [f for f in file_list if f.endswith('.pickle')]
 
-	scaler = []
+	scaler = {}
 	for pickle_file in pickle_files:
 		file_path = os.path.join(folder_path, pickle_file)
 		with open(file_path, 'rb') as file:
-			scaler.append(pickle.load(file))
+			scaler[pickle_file] = pickle.load(file)
 		print(scaler)
 	return scaler
 
@@ -199,8 +196,8 @@ def is_folder_empty(folder_path):
 def main():
 	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
 	st.header('Choose your own model and scaler')
-	st.text('*If has not train a model the button will be disabled')
-	st.text('*Default model: Random Forest Classifier, Default scaler: Standard Scaler')
+	st.warning('*If has not train a model the button will be disabled')
+	st.warning('*Default model: Random Forest Classifier, Default scaler: Standard Scaler')
 	col_model, col_scaler =  st.columns(2)
 	with col_model:
 		is_user_model = st.toggle('Use your trained model', disabled=is_user_model_empty)
@@ -214,12 +211,12 @@ def main():
 
 	model = MODELS if not is_user_model else st.selectbox(
 		'Choose your model',
-		MODELS
+		MODELS.keys()
 	)
 
 	scaler = SCALERS if not is_user_scaler else st.selectbox(
 		'Choose your scaler',
-		SCALERS
+		SCALERS.keys()
 	)
 
 	st.header('Loan Approval')
@@ -230,7 +227,10 @@ def main():
 	with col_prediction:
 		st.write('Creditability')
 		if df is not None:
-			prediction = predict_creditability(model=model, scaler=scaler, df=df)
+			prediction = predict_creditability(
+				model=MODELS if not is_user_model else MODELS[model], 
+				scaler=SCALERS if not is_user_scaler else SCALERS[scaler], 
+				df=df)
 			if prediction == 0:
 				st.warning('Not eligible')
 			else:
