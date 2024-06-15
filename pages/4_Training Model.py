@@ -6,6 +6,12 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.linear_model import LogisticRegression
 #from xgboost import XGBClassifier
 from sklearn.svm import SVC
+import pickle
+
+st.set_page_config(
+	page_title="Training Model",
+	layout="wide"
+)
 
 class Model:
     def __init__(self, df):
@@ -30,8 +36,12 @@ class Model:
     def Scaler(self, scaler):
         self.x_train = scaler.fit_transform(self.x_train)
         self.x_test = scaler.transform(self.x_test)
-
         self.scaler = scaler
+        self.save_scaler(self.scaler, 'scaler/user_trained/user_scaler.pickle')
+
+    def save_scaler(self, scaler, path):
+        with open(path, 'wb') as file:
+            pickle.dump(scaler, file)
     
     # Model creation
     def create_model(self, modelused):
@@ -39,9 +49,15 @@ class Model:
 
     def train_model(self):
         self.model.fit(self.x_train, self.y_train)
+        self.save_model(self.model, 'model/user_trained/user_model.pickle')
+    
+    def save_model(self, model, path):
+        with open(path, 'wb') as file:
+            pickle.dump(model, file)
     
     def model_predict(self):
         self.y_predict = self.model.predict(self.x_test)
+
     def predict(self, input):
         if self.scaler:
             input = self.scaler.transform(input)
@@ -56,34 +72,26 @@ class Model:
         st.write(f"Accuracy: {round(accuracy_score(self.y_test, self.y_predict) * 100, 2)}%")
         st.pyplot()
 
-
 def form_model():
-    with st.form("Select Model"):
-        ts = st.slider(label="Test Size",  min_value=0.00, max_value=0.90, format="%.2f")
-        sm = st.selectbox(label="Select Model", options=["RandomForestClassifer", "SVC", "LogisticRegression", "AdaBoostClassifier"])
-        s = st.selectbox("Scaler", options=["StandardScaler", "MinMaxScaler"], index=0)
-        if st.form_submit_button("Submit"):
-            test_size = ts
-            select_model = sm * 100, "%"
-            scaler = s
+    test_size = st.slider(label="Test Size",  min_value=0.10, max_value=0.90, format="%.2f")
+    select_model = st.selectbox(label="Select Model", options=["RandomForestClassifer", "SVC", "LogisticRegression", "AdaBoostClassifier"])
+    scaler = st.selectbox("Scaler", options=["StandardScaler", "MinMaxScaler"], index=0)
 
-    if sm == "RandomForestClassifer":
-        randomforestform(Model(st.session_state["data_preprocessing"].df), s, ts)
-    elif sm  == "SVC":
-        svcform(Model(st.session_state["data_preprocessing"].df), s, ts)
-    elif sm  == "LogisticRegression":
-        logisticform(Model(st.session_state["data_preprocessing"].df), s, ts)
-    elif sm  == "AdaBoostClassifier":
-        adaform(Model(st.session_state["data_preprocessing"].df), s, ts)
-
-    
+    if select_model == "RandomForestClassifer":
+        randomforestform(Model(st.session_state["data_preprocessing"].df), scaler=scaler, test_size=test_size)
+    elif select_model  == "SVC":
+        svcform(Model(st.session_state["data_preprocessing"].df), scaler=scaler, test_size=test_size)
+    elif select_model  == "LogisticRegression":
+        logisticform(Model(st.session_state["data_preprocessing"].df), scaler=scaler, test_size=test_size)
+    elif select_model  == "AdaBoostClassifier":
+        adaform(Model(st.session_state["data_preprocessing"].df), scaler=scaler, test_size=test_size)
 
 def randomforestform(model, scaler, test_size):
     with st.form("RandomForestClassifer Parameter"):
         n_est = st.number_input('Enter the number of estimators: ', min_value=0, value=100)
         m_dep = st.number_input('Enter the max depth: ', min_value=0, value=20)
         crit = st.selectbox('Enter the criterion',  ["gini", "entropy","log_loss"], index=0)
-        c_wght = st.selectbox('Enter the class weight', ["None","balanced", "balanced_subsample"], index=0)
+        c_wght = st.selectbox('Enter the class weight', ["balanced", "balanced_subsample"], index=0)
         if st.form_submit_button("Submit"):
             chosen_model = RandomForestClassifier(n_estimators=n_est, max_depth=m_dep, criterion=crit, class_weight=c_wght)
             model.seperate_data()
@@ -99,6 +107,7 @@ def randomforestform(model, scaler, test_size):
             model.report()
             st.session_state["model"] = model
             st.success("Model Train Successful")   
+
 def svcform(model, scaler, test_size):
     with st.form("SVC Parameter"):
         kernels = st.selectbox("Enter the kernel choice", ["linear", "poly", "rbf", "sigmoid"], index=0)
@@ -116,9 +125,10 @@ def svcform(model, scaler, test_size):
             model.model_predict()
             model.report()
             st.session_state["model"] = model
+
 def logisticform(model, scaler, test_size):
     with st.form("Logistic Regression Parameter"):
-        c = st.number_input('Enter the regularization parameter (C): ', min_value= 0.00, format="%.2f")
+        c = st.number_input('Enter the regularization parameter (C): ', min_value= 1.00, format="%.2f")
         solvers = st.selectbox('Enter the solver: ', ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga'], index=0)
         if st.form_submit_button("Submit"):
             chosen_model = LogisticRegression(C=c, solver=solvers)
@@ -134,6 +144,7 @@ def logisticform(model, scaler, test_size):
             model.model_predict()
             model.report()
             st.session_state["model"] = model
+
 def adaform(model, scaler, test_size):
     with st.form("LOgistic Regression Parameter"):
         n_est = st.number_input('Enter the number of estimators: ', min_value=0, value=100)
@@ -153,10 +164,6 @@ def adaform(model, scaler, test_size):
             model.report()
             st.session_state["model"] = model
 
-st.set_page_config(
-	page_title="Training Model",
-	layout="wide"
-)
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.title('Training Model')
 
@@ -168,4 +175,4 @@ else:
         
 if st.session_state.get("model"):
     if st.button('Predict Data'):
-        st.switch_page('pages/2_Prediction_Demo.py')
+        st.switch_page('pages/5_Prediction_Demo.py')
