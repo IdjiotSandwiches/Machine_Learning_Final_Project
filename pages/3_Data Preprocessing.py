@@ -56,7 +56,7 @@ def form_preprocessing():
          dp = data_preprocessing("dataset/german.csv", null_handle, resample, shuffle)
          st.success("Data Preprocessing Success")
          st.session_state["data_preprocessing"] = dp
-         time.sleep(2)
+         time.sleep(1)
          st.switch_page('pages/4_Train_Your_Model.py')
 
 st.set_page_config(
