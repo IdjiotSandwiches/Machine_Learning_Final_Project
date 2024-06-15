@@ -77,6 +77,10 @@ class Model:
 		self.model.fit(self.x_train, self.y_train)
 		self.save_model(self.model, 'model/model.pickle')
 	
+	def save_model(self, model, path):
+		with open(path, 'wb') as file:
+			pickle.dump(model, file)
+
 	def model_predict(self):
 		self.y_predict = self.model.predict(self.x_test)
 
