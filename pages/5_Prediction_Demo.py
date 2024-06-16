@@ -4,11 +4,29 @@ import numpy as np
 import pickle
 import time
 import os
+from config import page_config
 
-st.set_page_config(
-	page_title="Prediction Demo",
-	layout="wide"
-)
+def success_toast():
+	custom_css = """
+		<style>
+		[data-testid="stToast"] {
+			background-color: green !important;
+			color: white;
+		}
+		</style>
+	"""
+	return st.markdown(custom_css, unsafe_allow_html=True)
+
+def error_toast():
+	custom_css = """
+		<style>
+		[data-testid="stToast"] {
+			background-color: red !important;
+			color: white;
+		}
+		</style>
+	"""
+	return st.markdown(custom_css, unsafe_allow_html=True)
 
 def load_data(is_user_model, is_user_scaler):
 	if is_user_model:
@@ -20,6 +38,21 @@ def load_data(is_user_model, is_user_scaler):
 		scaler = load_user_scaler()
 	else:
 		scaler = load_default_scaler()
+
+	if model is None:
+		error_toast()
+		st.toast('An error occurred!!')
+	else:
+		success_toast()
+		st.toast('Model loaded!!')
+
+	if scaler is None:
+		error_toast()
+		st.toast('An error occurred!!')
+	else:
+		success_toast()
+		st.toast('Scaler loaded!!')
+	
 	return model, scaler
 
 def load_default_model():
@@ -196,8 +229,8 @@ def is_folder_empty(folder_path):
 def main():
 	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
 	st.header('Choose your own model and scaler')
-	st.warning('*If has not train a model the button will be disabled')
-	st.warning('*Default model: Random Forest Classifier, Default scaler: Standard Scaler')
+	st.info('📢If has not train a model the button will be disabled')
+	st.info('📢Default model: Random Forest Classifier, Default scaler: Standard Scaler')
 	col_model, col_scaler =  st.columns(2)
 	with col_model:
 		is_user_model = st.toggle('Use your trained model', disabled=is_user_model_empty)
@@ -230,12 +263,14 @@ def main():
 			prediction = predict_creditability(
 				model=MODELS if not is_user_model else MODELS[model], 
 				scaler=SCALERS if not is_user_scaler else SCALERS[scaler], 
-				df=df)
+				df=df
+			)
 			if prediction == 0:
 				st.warning('Not eligible')
 			else:
 				st.success('Eligible')
 
 if __name__ == '__main__':
+	config = page_config('Prediction Demo')
 	main()
 
