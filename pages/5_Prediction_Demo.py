@@ -6,28 +6,6 @@ import time
 import os
 from config import page_config
 
-def success_toast():
-	custom_css = """
-		<style>
-		[data-testid="stToast"] {
-			background-color: green !important;
-			color: white;
-		}
-		</style>
-	"""
-	return st.markdown(custom_css, unsafe_allow_html=True)
-
-def error_toast():
-	custom_css = """
-		<style>
-		[data-testid="stToast"] {
-			background-color: red !important;
-			color: white;
-		}
-		</style>
-	"""
-	return st.markdown(custom_css, unsafe_allow_html=True)
-
 def load_data(is_user_model, is_user_scaler):
 	if is_user_model:
 		model = load_user_model()
@@ -37,22 +15,7 @@ def load_data(is_user_model, is_user_scaler):
 	if is_user_scaler:
 		scaler = load_user_scaler()
 	else:
-		scaler = load_default_scaler()
-
-	if model is None:
-		error_toast()
-		st.toast('An error occurred!!')
-	else:
-		success_toast()
-		st.toast('Model loaded!!')
-
-	if scaler is None:
-		error_toast()
-		st.toast('An error occurred!!')
-	else:
-		success_toast()
-		st.toast('Scaler loaded!!')
-	
+		scaler = load_default_scaler()	
 	return model, scaler
 
 def load_default_model():
@@ -228,7 +191,8 @@ def is_folder_empty(folder_path):
 
 def main():
 	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
-	st.header('Choose your own model and scaler')
+	st.title('Loan Approval')
+	st.header('Choose your own model and scaler', divider='grey')
 	st.info('📢If has not train a model the button will be disabled')
 	st.info('📢Default model: Random Forest Classifier, Default scaler: Standard Scaler')
 	col_model, col_scaler =  st.columns(2)
@@ -252,7 +216,7 @@ def main():
 		SCALERS.keys()
 	)
 
-	st.header('Loan Approval')
+	st.header('Demo', divider='grey')
 	col_form, col_prediction = st.columns(2)
 	with col_form:
 		df = form()
