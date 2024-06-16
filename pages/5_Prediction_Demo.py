@@ -192,7 +192,7 @@ def is_folder_empty(folder_path):
 def main():
 	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
 	st.title('Loan Approval :money_with_wings:')
-	st.header('Choose your own model and scaler', divider='grey')
+	st.header('Choose your own model and scaler :black_nib:', divider='grey')
 	st.info('📢If has not train a model the button will be disabled')
 	st.info('📢Default model: Random Forest Classifier, Default scaler: Standard Scaler')
 	col_model, col_scaler =  st.columns(2)
@@ -230,7 +230,7 @@ def main():
 				df=df
 			)
 			if prediction == 0:
-				st.warning('Not eligible :chart_with_downwards_trend:')
+				st.error('Not eligible :chart_with_downwards_trend:')
 			else:
 				st.success('Eligible :chart_with_upwards_trend:')
 
