@@ -32,9 +32,7 @@ class DataPreprocessing:
 	def shuffle(self):
 		self.df = shuffle(self.df)
   
-def data_preprocessing(file_path, null_handle, resample, shuffle):
-   data_prep = DataPreprocessing(file_path=file_path)
-   data_prep.load_data()
+def data_preprocessing(data_prep, null_handle, resample, shuffle):
    if null_handle == "Drop":
       data_prep.drop_na()
    else:
@@ -46,17 +44,41 @@ def data_preprocessing(file_path, null_handle, resample, shuffle):
 	
    return data_prep
 
+def df_info(df):
+   df_info = pd.DataFrame({
+      'Creditability': ['Not Eligible', 'Eligible'],
+      'Count': df['Creditability'].groupby(df['Creditability']).count()
+	})
+   df_null = df.isnull().sum()
+   df_null.name = 'Null Count'
+   tab_1, tab_2, tab_3 = st.tabs(['Data count', 'Data preview', 'Data null'])
+   with tab_1:
+      st.dataframe(df_info, hide_index=True)
+   with tab_2:
+      st.dataframe(df.head(), hide_index=True)
+   with tab_3:
+      st.dataframe(df_null)
+
 def form_preprocessing():
+   data_prep = DataPreprocessing(file_path="dataset/german.csv")
+   data_prep.load_data()
+   st.header('Raw data')
+   df_info(data_prep.df)
+   st.header('Choose your own data handling method')
    with st.form("preprocessing"):
-      #   null_handle = st.selectbox("NA Handle", ["Drop", "Mean"], index=0)
-      null_handle = st.radio("NA Handle", ["Drop", "Mean"], index=0, horizontal=True)
+      st.info('Recommended to resampling data because data not balanced!', icon='ℹ')
+      null_handle = st.radio("Null value handling", ["Drop", "Mean"], index=0, horizontal=True)
       resample = st.toggle("Resample")
       shuffle = st.toggle("Shuffle")
-      if st.form_submit_button("Submit"):
-         dp = data_preprocessing("dataset/german.csv", null_handle, resample, shuffle)
-         st.success("Data Preprocessing Success")
-         st.session_state["data_preprocessing"] = dp
-         time.sleep(1)
+      submit_prep = st.form_submit_button('Submit')
+   if submit_prep:
+      dp = data_preprocessing(data_prep, null_handle, resample, shuffle)
+      st.header('Preprocessed Data')
+      st.success("Data Preprocessing Success")
+      df_info(dp.df)
+      st.session_state["data_preprocessing"] = dp
+      # time.sleep(1)
+      if st.button('Train your model'):
          st.switch_page('pages/4_Train_Your_Model.py')
 
 st.set_page_config(
@@ -64,7 +86,7 @@ st.set_page_config(
 	layout="wide"
 )
 st.set_option('deprecation.showPyplotGlobalUse', False)
-st.title('Training Model')
+st.title('Preprocess Your Data')
 
 df = form_preprocessing()
 
