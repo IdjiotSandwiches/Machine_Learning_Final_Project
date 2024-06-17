@@ -5,6 +5,10 @@ import seaborn as sns
 import mpld3 
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import math
 
 st.set_page_config(
 	page_title="Exploratory Data Analysis",
@@ -42,31 +46,75 @@ def desciptive(df):
    st.write(df.describe())
 
 def histogram(df):
-   column = df.columns.tolist()
+   columns = df.columns.tolist()
    plot_all = st.checkbox("Plot all columns for histogram")
     
    if plot_all:
-      st.write(f"Histogram for all")
-      fig,ax = plt.subplots(figsize=(18, 18))
-      df[column].hist(ax=ax)
-      st.pyplot(fig)
-   else:
-      select_col = st.selectbox("Select a Column for Histogram", column)
-      if select_col:
-            st.write(f'Histogram for {select_col}')
-            fig, ax = plt.subplots()
-            df[select_col].hist(ax=ax)
-             
-            fig_html = mpld3.fig_to_html(fig)
-            components.html(fig_html, height=600)
+      # st.write(f"Histogram for all")
+      # fig,ax = plt.subplots(figsize=(18, 18))
+      # df[columns].hist(ax=ax)
+      # st.pyplot(fig)
 
+      fig = make_subplots(rows=5, cols=5, subplot_titles=columns)
+      for i, column in enumerate(columns):
+         row = i // 5 + 1
+         col = i % 5 + 1
+         fig.add_trace(
+            go.Histogram(
+               x=df[column] if (column == 'Credit_Amount' or column == 'Duration_of_Credit_monthly' or column == 'Age_years') else df[column].sort_values().astype(str), 
+               name=column,
+            ),
+            row=row, 
+            col=col,
+         )
+
+      fig.update_layout(
+         title_text="Histograms for all",
+         height=400*5,
+         showlegend=False,
+         bargap=0.2
+      )
+      st.plotly_chart(fig, theme="streamlit")
+   else:
+      select_col = st.selectbox("Select a Column for Histogram", columns)
+      if select_col:
+         # st.write(f'Histogram for {select_col}')
+         # fig, ax = plt.subplots()
+         # df[select_col].hist(ax=ax)
+         
+         fig = px.histogram(
+            df[select_col] if (select_col == 'Credit_Amount' or select_col == 'Duration_of_Credit_monthly' or select_col == 'Age_years') else df[select_col].sort_values().astype(str), 
+            x=select_col,
+            title=f'Histogram for {select_col}',
+            color_discrete_sequence=['rgb(158, 185, 243)'],
+         )
+         fig.update_layout(
+            bargap=0.2, 
+            height=800
+         )
+         st.plotly_chart(fig, theme="streamlit")
+             
+         # fig_html = mpld3.fig_to_html(fig)
+         # components.html(fig_html, height=600)
 
 def correlation(df):
    st.write('Correlation Matrix')
    corr = df.corr()
-   fig, ax = plt.subplots(figsize=(12, 12))
-   sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
-   st.pyplot(fig)
+   # fig, ax = plt.subplots(figsize=(12, 12))
+   # sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
+   # st.pyplot(fig)
+
+   fig = px.imshow(
+      corr, 
+      text_auto=True,
+      title='Correlation Matrix',
+      aspect='auto',
+   )
+   fig.update_layout(
+      height=1200,
+      coloraxis_colorscale='plasma'
+   )
+   st.plotly_chart(fig, theme="streamlit")
     
 def box_plot(df):
    st.write("Box Plot")
