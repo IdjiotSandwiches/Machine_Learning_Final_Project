@@ -195,7 +195,7 @@ def main():
 	st.header('Choose your own model and scaler :black_nib:', divider='grey')
 	st.info(f'''
 		If has not train a model the button will be disabled.\n
-		Default model: Random Forest Classifier, Default scaler: Standard Scaler.
+		Default model: **Random Forest Classifier**, Default scaler: **Standard Scaler**.
 	''', icon='ℹ')
 	col_model, col_scaler =  st.columns(2)
 	with col_model:
