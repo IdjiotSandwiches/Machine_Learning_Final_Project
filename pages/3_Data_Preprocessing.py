@@ -77,7 +77,6 @@ def form_preprocessing():
       st.success("Data Preprocessing Success")
       df_info(dp.df)
       st.session_state["data_preprocessing"] = dp
-      # time.sleep(1)
       if st.button('Train your model'):
          st.switch_page('pages/4_Train_Your_Model.py')
 
