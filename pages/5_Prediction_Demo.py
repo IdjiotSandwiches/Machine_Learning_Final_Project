@@ -1,9 +1,4 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-import time
-import os
+from config import *
 from config import page_config
 
 def load_data(is_user_model, is_user_scaler):
@@ -239,4 +234,3 @@ def main():
 if __name__ == '__main__':
 	config = page_config('Prediction Demo')
 	main()
-
