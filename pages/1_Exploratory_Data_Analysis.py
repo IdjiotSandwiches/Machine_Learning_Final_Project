@@ -15,7 +15,6 @@ st.set_page_config(
 	layout='wide'
 )
 
-#@st.cache
 def load_data():
    csv = pd.read_csv('dataset/german.csv', sep=';')
    return csv
@@ -33,18 +32,15 @@ def description():
       st.switch_page('pages/2_Description_Page.py')
     
 def preview(df):
-   st.write('**Desciptive Analysis**')
+   st.header('Desciptive Analysis')
    st.dataframe(df.head())
-    
-def desciptive(df):
-   st.write('**Desciptive Analysis**')  
    st.write(df.describe())
    st.divider()
 
 def histogram(df):
+   st.header('Histogram')
    columns = df.columns.tolist()
    plot_all = st.checkbox("Plot all columns for histogram")
-    
    if plot_all:
       fig = make_subplots(rows=5, cols=5, subplot_titles=columns)
       for i, column in enumerate(columns):
@@ -60,7 +56,6 @@ def histogram(df):
          )
 
       fig.update_layout(
-         title_text="Histograms for all",
          height=400*5,
          showlegend=False,
          bargap=0.2,
@@ -72,7 +67,7 @@ def histogram(df):
          fig = px.histogram(
             df[select_col], 
             x=select_col,
-            title=f'Histogram for {select_col}',
+            title=select_col,
             color_discrete_sequence=['rgb(158, 185, 243)'],
          )
          fig.update_layout(
@@ -85,11 +80,11 @@ def histogram(df):
    st.divider()
 
 def correlation(df):
+   st.header('Correlation Matrix')
    corr = df.corr()
    fig = px.imshow(
       corr, 
       text_auto=True,
-      title='Correlation Matrix',
       aspect='auto',
    )
    fig.update_layout(
@@ -99,27 +94,21 @@ def correlation(df):
    st.plotly_chart(fig, theme="streamlit")
    st.divider()
    
-    
 def box_plot(df):
-   st.write("Box Plot")
+   st.header('Boxplot')
    columns = df.columns.tolist()
    plot_all = st.checkbox("Plot all columns for box plot")
     
    if plot_all:
-      fig = px.box(
-            df, 
-            title='Box Plot for all'
-      )
-      fig.update_layout(
-         height=800,
-      )
+      fig = px.box(df)
+      fig.update_layout(height=800)
    else:
       select_col = st.selectbox("Select a Column for Box Plot", columns)
       if select_col:
          fig = px.box(
             df, 
             y=select_col,
-            title=f'Box Plot for {select_col}'
+            title=select_col
          )
          fig.update_layout(
             height=800,
@@ -131,7 +120,6 @@ def main():
    df = load_data()
    description()
    preview(df)
-   desciptive(df)
    histogram(df)
    correlation(df)
    box_plot(df)
