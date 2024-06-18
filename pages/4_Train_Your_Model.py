@@ -7,6 +7,7 @@ from sklearn.linear_model import LogisticRegression
 #from xgboost import XGBClassifier
 from sklearn.svm import SVC
 import pickle
+import plotly.express as px
 
 st.set_page_config(
 	page_title="Training Model",
@@ -66,11 +67,11 @@ class Model:
     # Evaluation
     def report(self):
         cm = confusion_matrix(self.y_test, self.y_predict, labels=self.model.classes_)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=self.model.classes_)
-
-        disp.plot(cmap="Blues")
+        # disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=self.model.classes_)
+        # disp.plot(cmap="Blues")
+        fig = px.imshow(cm, text_auto=True)
+        st.plotly_chart(fig, theme="streamlit")
         st.write(f"Accuracy: {round(accuracy_score(self.y_test, self.y_predict) * 100, 2)}%")
-        st.pyplot()
 
 def form_model():
     test_size = st.slider(label="Test Size",  min_value=0.10, max_value=0.90, format="%.2f")
