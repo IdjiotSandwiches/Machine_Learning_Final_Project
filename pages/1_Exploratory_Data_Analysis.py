@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 import seaborn as sns
-import mpld3 
 import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 import plotly.express as px
@@ -114,6 +113,27 @@ def box_plot(df):
             height=800,
          )
    st.plotly_chart(fig, theme="streamlit")
+   st.divider()
+   
+def scatter_plot(df):
+   st.header("Scatter Plot")
+   columns = df.columns.tolist()
+   selected_columns = st.multiselect("Select columns to plot", columns)
+   
+   if len(selected_columns) == 2:
+      st.write(f"Scatter Plot for: {selected_columns[0]} vs {selected_columns[1]}")
+      fig = px.scatter(x = selected_columns[0], 
+                       y = selected_columns[1], 
+                       data_frame=df)
+      fig.update_layout(height=800)
+      st.plotly_chart(fig, theme="streamlit")
+      st.divider()
+      #fig, ax = plt.subplots()
+      #sns.scatterplot(x=selected_columns[0], y=selected_columns[1], data=df, ax=ax)
+      #ax.set_title(f'Scatter Plot of {selected_columns[0]} vs {selected_columns[1]}')
+      #st.pyplot(fig)
+   elif len(selected_columns) != 2:
+      st.write("Please select exactly two columns to plot.")
     
 def main():
    st.title('Explatory Data Analysis')
@@ -123,6 +143,7 @@ def main():
    histogram(df)
    correlation(df)
    box_plot(df)
+   scatter_plot(df)
     
 if __name__ == '__main__':
 	main()
