@@ -118,27 +118,9 @@ def form_preprocessing():
 			st.session_state["data_preprocessing"] = dp
 			
 	if 'data_preprocessing' in st.session_state:
-		if st.button('Train your model'):
+		if st.button('Train your model', use_container_width=True, type='primary'):
 			st.switch_page('pages/4_Train_Your_Model.py')
-
-   
-   
-   # with st.form("preprocessing"):
-      
-   #    null_handle = st.radio("Null value handling", ["Drop", "Mean"], index=0, horizontal=True)
-   #    resample = st.toggle("Resample")
-   #    shuffle = st.toggle("Shuffle")
-   #    if st.form_submit_button('Submit'):
-   #       dp = data_preprocessing(data_prep, null_handle, resample, shuffle)
-   #       st.success("Data Preprocessing Success")
-   #       st.header('Preprocessed Data')
-   #       df_info(dp.df)
-   #       st.session_state["data_preprocessing"] = dp
-   
-   # if 'data_preprocessing' in st.session_state:
-   #    if st.button('Train your model'):
-   #       st.switch_page('pages/4_Train_Your_Model.py')
-
+			
 st.set_page_config(
 	page_title="Data Preprocessing",
 	layout="wide"

@@ -122,8 +122,8 @@ if st.session_state.get("data_preprocessing"):
     form_model()
 else:
     if st.button('Preprocess Data First'):
-        st.switch_page('pages/3_Data Preprocessing.py')
+        st.switch_page('pages/3_Data_Preprocessing.py')
         
 if st.session_state.get("model"):
-    if st.button('Predict Data'):
+    if st.button('Predict Data', use_container_width=True, type='primary'):
         st.switch_page('pages/5_Prediction_Demo.py')
