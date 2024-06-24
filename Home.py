@@ -36,7 +36,7 @@ Using machine learning techniques and state of the art services could be your an
 	des1,des2=st.columns(2)
 	with des1:
 		st.subheader('Data Description')
-		desimg=Image.open('dummy image.jpg')
+		desimg=Image.open('datades.png')
 		#desimg=desimg.resize((450,300))
 		st.image(desimg)
 	with des2:
