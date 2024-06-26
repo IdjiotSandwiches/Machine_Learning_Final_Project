@@ -1,10 +1,4 @@
-import streamlit as st
-import pandas as pd
-
-st.set_page_config(
-	page_title="Exploratory Data Analysis",
-	layout='wide'
-)
+from config import *
 
 def create_table(subheader, items):
     col_config = {
@@ -90,5 +84,6 @@ def main():
     st.info('Currency in Deutsche Mark DM', icon='ℹ️')
     init()
     
-    
-main()
+if __name__ == '__main__':
+    config = page_config('Label Description')
+    main()

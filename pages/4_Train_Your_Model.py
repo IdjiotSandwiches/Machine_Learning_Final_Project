@@ -1,16 +1,4 @@
-import streamlit as st
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.linear_model import LogisticRegression
-#from xgboost import XGBClassifier
-from sklearn.svm import SVC
-import pickle
-import plotly.express as px
-
-st.set_page_config(
-	page_title="Training Model",
-	layout="wide"
-)
+from config import *
 
 class Model:
     def __init__(self, dp):
@@ -115,15 +103,18 @@ def adaform(model):
             model.report()
             st.session_state["model"] = model
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
-st.title('Training Model')
+def main():
+    st.title('Training Model')
+    if st.session_state.get("data_preprocessing"):
+        form_model()
+    else:
+        if st.button('Preprocess Data First'):
+            st.switch_page('pages/3_Data_Preprocessing.py')
+            
+    if st.session_state.get("model"):
+        if st.button('Predict Data', use_container_width=True, type='primary'):
+            st.switch_page('pages/5_Prediction_Demo.py')
 
-if st.session_state.get("data_preprocessing"):
-    form_model()
-else:
-    if st.button('Preprocess Data First'):
-        st.switch_page('pages/3_Data_Preprocessing.py')
-        
-if st.session_state.get("model"):
-    if st.button('Predict Data', use_container_width=True, type='primary'):
-        st.switch_page('pages/5_Prediction_Demo.py')
+if __name__ == '__main__':
+    config = page_config('Training Model')
+    main()
