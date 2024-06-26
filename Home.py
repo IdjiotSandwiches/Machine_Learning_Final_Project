@@ -1,25 +1,9 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-from PIL import Image
-
-st.set_page_config(
-	page_title="Home",
-	layout="wide"
-)
-
-def load_data():
-	if 'df' not in st.session_state:
-		st.session_state.df = pd.read_csv('dataset/german.csv', sep=';')
+from config import *
 
 def main():
-	
-
-	load_data()
 	st.title('LOAN CREDIT CLASSIFICATION')
-	head=Image.open('Header.jpg')
-	head=head.resize((1300,500))
+	head = Image.open('img/Header.jpg')
+	head = head.resize((1300,500))
 	st.image(head)
 	st.markdown("""
 		<div style='text-align: justify;'>
@@ -33,11 +17,10 @@ Using machine learning techniques and state of the art services could be your an
 	if st.button('Get Started ➤'):
 			st.switch_page('pages/1_Exploratory_Data_Analysis.py')
 
-	des1,des2=st.columns(2)
+	des1,des2 = st.columns(2)
 	with des1:
 		st.subheader('Data Description')
-		desimg=Image.open('datades.png')
-		#desimg=desimg.resize((450,300))
+		desimg = Image.open('dimg/atades.png')
 		st.image(desimg)
 	with des2:
 		st.markdown("""
@@ -51,11 +34,10 @@ Using machine learning techniques and state of the art services could be your an
 		if st.button('Description about data ➤'):
 			st.switch_page('pages/2_Description_Page.py')
 
-	eda1,eda2=st.columns(2)
+	eda1,eda2 = st.columns(2)
 	with eda2:
 		st.subheader('Analyzing Data')
-		desimg=Image.open('eda.png')
-		#desimg=desimg.resize((450,300))
+		desimg = Image.open('img/eda.png')
 		st.image(desimg)
 	with eda1:
 		st.markdown("""
@@ -70,11 +52,10 @@ Using machine learning techniques and state of the art services could be your an
 		if st.button('Explore the Data? ➤'):
 			st.switch_page('pages/1_Exploratory_Data_Analysis.py')
 
-	tr1,tr2=st.columns(2)
+	tr1,tr2 = st.columns(2)
 	with tr1:
 		st.subheader('Develop Your Own Model')
-		desimg=Image.open('train.jpg')
-		desimg=desimg.resize((450,400))
+		desimg = Image.open('img/train.jpg')
 		st.image(desimg)
 	with tr2:
 		st.markdown("""
@@ -88,11 +69,10 @@ Using machine learning techniques and state of the art services could be your an
 		if st.button('Train Model ➤'):
 			st.switch_page('pages/4_Train_Your_Model.py')
 		
-	pred1,pred2=st.columns(2)
+	pred1,pred2 = st.columns(2)
 	with pred2:
 		st.subheader('Predict Your Loan')
-		desimg=Image.open('predict.jpg')
-		#desimg=desimg.resize((450,300))
+		desimg = Image.open('img/predict.jpg')
 		st.image(desimg)
 	with pred1:
 		st.markdown("""
@@ -107,4 +87,5 @@ Using machine learning techniques and state of the art services could be your an
 			st.switch_page('pages/5_Prediction_Demo.py')
 
 if __name__ == '__main__':
+	config = page_config('Home')
 	main()
