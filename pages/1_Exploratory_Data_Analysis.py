@@ -53,7 +53,6 @@ def histogram(df):
             row=row, 
             col=col,
          )
-
       fig.update_layout(
          height=400*5,
          showlegend=False,
@@ -128,10 +127,6 @@ def scatter_plot(df):
       fig.update_layout(height=800)
       st.plotly_chart(fig, theme="streamlit")
       st.divider()
-      #fig, ax = plt.subplots()
-      #sns.scatterplot(x=selected_columns[0], y=selected_columns[1], data=df, ax=ax)
-      #ax.set_title(f'Scatter Plot of {selected_columns[0]} vs {selected_columns[1]}')
-      #st.pyplot(fig)
    elif len(selected_columns) != 2:
       st.write("Please select exactly two columns to plot.")
     
@@ -140,10 +135,15 @@ def main():
    df = load_data()
    description()
    preview(df)
-   histogram(df)
-   correlation(df)
-   box_plot(df)
-   scatter_plot(df)
+   tab_1, tab_2, tab_3, tab_4 = st.tabs(['Histogram', 'Correlation', 'Box Plot', 'Scatter Plot'])
+   with tab_1:
+      histogram(df)
+   with tab_2:
+      correlation(df)
+   with tab_3:
+      box_plot(df)
+   with tab_4:
+      scatter_plot(df)
     
 if __name__ == '__main__':
 	main()
