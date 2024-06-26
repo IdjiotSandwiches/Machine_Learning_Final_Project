@@ -1,18 +1,4 @@
-import pandas as pd
-import numpy as np
-import streamlit as st
-import seaborn as sns
-import matplotlib.pyplot as plt
-import streamlit.components.v1 as components
-import plotly.express as px
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-import math
-
-st.set_page_config(
-	page_title="Exploratory Data Analysis",
-	layout='wide'
-)
+from config import *
 
 def load_data():
    csv = pd.read_csv('dataset/german.csv', sep=';')
@@ -146,4 +132,5 @@ def main():
       scatter_plot(df)
     
 if __name__ == '__main__':
-	main()
+   config = page_config('Exploratory Data Analysis')
+   main()

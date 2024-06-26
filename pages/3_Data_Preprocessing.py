@@ -1,10 +1,4 @@
-import time
-import pandas as pd
-import streamlit as st
-import pickle
-from sklearn.utils import resample, shuffle
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from config import *
 
 class DataPreprocessing:
 	def __init__(self, file_path):
@@ -121,15 +115,13 @@ def form_preprocessing():
 		if st.button('Train your model', use_container_width=True, type='primary'):
 			st.switch_page('pages/4_Train_Your_Model.py')
 			
-st.set_page_config(
-	page_title="Data Preprocessing",
-	layout="wide"
-)
-st.set_option('deprecation.showPyplotGlobalUse', False)
-st.title('Preprocess Your Data')
+def main():
+	st.title('Preprocess Your Data')
+	form_preprocessing()
 
-df = form_preprocessing()
-
+if __name__ == '__main__':
+	config = page_config('Data Preprocessing')
+	main()
 
         
             
