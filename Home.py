@@ -20,7 +20,7 @@ Using machine learning techniques and state of the art services could be your an
 	des1,des2 = st.columns(2)
 	with des1:
 		st.subheader('Data Description')
-		desimg = Image.open('dimg/atades.png')
+		desimg = Image.open('img/datades.png')
 		st.image(desimg)
 	with des2:
 		st.markdown("""
