@@ -6,96 +6,88 @@ st.set_page_config(
 	layout='wide'
 )
 
+def create_table(subheader, items):
+    col_config = {
+        'Label': st.column_config.Column(
+            width='small'
+        ),
+        'Description': st.column_config.Column(
+            width='large'
+        )
+    }
+    st.subheader(subheader)
+    st.dataframe(pd.DataFrame(items), hide_index=True, use_container_width=True, height=200, column_config=col_config)
+
 def init():
+    
     col_1, col_2 = st.columns(2)
     with col_1:
-        data_credit = {'Creditability':[1, 0], 'Description':['credit-worthy', 'not credit-worthy']}
-        Creditability = pd.DataFrame(data_credit)
-        st.dataframe(Creditability, hide_index=True, use_container_width=True, height=200)
+        data_credit = {'Label':[1, 0], 'Description':['Credit-worthy', 'Not Credit-worthy']}
+        create_table('Creditability', data_credit)
         
-        data_account ={'Balacence in current account':[1, 2, 3, 4], 'Description':['No running account', 'No Balance', '0<= current_money <200 DM', '>= 200 DM']}
-        Account = pd.DataFrame(data_account)
-        st.dataframe(Account, hide_index=True, use_container_width=True, height=200)
+        data_account = {'Label':[1, 2, 3, 4], 'Description':['No running account', 'No Balance', 'Below 200 DM', '200 DM or above']}
+        create_table('Balance in current account', data_account)
         
-        data_month = {'Duration in Month':[1,2,3,4,5,6,7,8,9,10], 'Description':['> 54 months', '48< months <= 54', '42 < months <=48', '36 < months <= 42', '30< months <=36', '24 < months <=30', '18 < months <=24', '12 < months<=18', '6< months<=12', '<= 6months']}
-        Months = pd.DataFrame(data_month)
-        st.dataframe(Months, hide_index=True, use_container_width=True, height=200)
+        # data_month = {'Duration in Month':[1,2,3,4,5,6,7,8,9,10], 'Description':['More than 54 months', '49 - 54 months', '43 - 48 months', '37 - 42 months', '31 - 36 month', '25 - 30 months', '19 - 24 months', '13 - 18 months', '6 - 12 months', 'Less than 6 months']}
+        # st.dataframe(pd.DataFrame(data_month), hide_index=True, use_container_width=True, height=200, column_config=col_config)
         
-        data_prev = {'Payment of previous credits':[0,1,2,3,4], 'Description':['hesitant payment of previous credits', 'problematic running account / there are further credits running but at other banks', 'no previous credits / paid back all previous credits', 'no problems with current credits at this bank', 'paid back previous credits at this bank']}
-        Prev = pd.DataFrame(data_prev)
-        st.dataframe(Prev, hide_index=True, use_container_width=True, height=200)
+        data_prev = {'Label':[0,1,2,3,4], 'Description':['Hesitant payment of previous credits', 'Problematic running account / there are further credits running but at other banks', 'No previous credits / paid back all previous credits', 'No problems with current credits at this bank', 'Paid back previous credits at this bank']}
+        create_table('Payment of previous credits', data_prev)
         
-        data_purpose = {'Purpose of Credit':[0,1,2,3,4,5,6,7,8,9,10], 'Description':['other', 'new car', 'used car', 'items of furniture', 'radio / television', 'household appliances', 'repair', 'education', 'vacation', 'retraining', 'business']}
-        Purpose = pd.DataFrame(data_purpose)
-        st.dataframe(Purpose, hide_index=True, use_container_width=True, height=200)
+        data_purpose = {'Label':[0,1,2,3,4,5,6,7,8,9,10], 'Description':['Other', 'New car', 'Used car', 'Items of furniture', 'Radio / Television', 'Household appliances', 'Repair', 'Education', 'Vacation', 'Retraining', 'Business']}
+        create_table('Purpose of credit', data_purpose)
         
-        data_ammount = {'Amount of credit in DM': [1,2,3,4,5,6,7,8,9,10], 'Description':['> 20000', '15000 < Credit <= 20000', '10000 < Credit <= 15000', '7500 < Credit <= 10000', '5000 < Credit <= 7500', '2500 < Credit <= 5000', '1500 < Credit <= 2500', '1000 < Credit <= 1500', '500 < Credit <= 1000', '<=500']}
-        Ammount = pd.DataFrame(data_ammount)
-        st.dataframe(Ammount, hide_index=True, use_container_width=True, height=200)
+        data_ammount = {'Label': [1,2,3,4,5,6,7,8,9,10], 'Description':['More than 20000', '15000-20000', '10000-14999', '7500-9999', '5000-7499', '2500-4999', '1500-2499', '1000-1499', '500-999', 'Less than 500']}
+        create_table('Amount of credit in DM', data_ammount)
         
-        data_saving = {'Value of savings or stocks in DM': [1,2,3,4,5], 'Description': ['not available / no savings', '< 100', '100<= Savings < 500', '500 <= Savings < 1000' , '>= 1000']}
-        Saving = pd.DataFrame(data_saving)
-        st.dataframe(Saving, hide_index=True, use_container_width=True, height=200)
+        data_saving = {'Label': [1,2,3,4,5], 'Description': ['Not available / No savings', 'Less than 100', '100-499', '500-1000' , 'More than 1000']}
+        create_table('Value of savings or stocks in DM', data_saving)
         
-        data_employment = {'Has been employed by current employer for': [1,2,3,4,5], 'Description':['unemployed', '<= 1 year', '1 <= years < 4', '4 <= years < 7', '>= 7 years']}
-        Employment = pd.DataFrame(data_employment)
-        st.dataframe(Employment, hide_index=True, use_container_width=True, height=200)
+        data_employment = {'Label': [1,2,3,4,5], 'Description':['Unemployed', 'Less than 1 year', '1-4 years', '4-7 years', 'More than 7 years']}
+        create_table('Has been employed by current employer for', data_employment)
 
-        data_installment = {'Instalment in % of available income': [1,2,3,4], 'Description':['>= 35', '25 <= percentage < 35', '20 <= percentage < 25', '< 20']}
-        Installment = pd.DataFrame(data_installment)
-        st.dataframe(Installment, hide_index=True, use_container_width=True, height=200)
+        data_installment = {'Label': [1,2,3,4], 'Description':['Above 35', '25-35', '20-25', 'Below 20']}
+        create_table('Instalment in % of available income', data_installment)
 
-        data_marital = {'Marital Status / Sex':[1,2,3,4], 'Description':['male: divorced / living apart', 'male: single', 'male: married / widowed', 'female']}
-        Marital = pd.DataFrame(data_marital)
-        st.dataframe(Marital, hide_index=True, use_container_width=True, height=200)
+        data_marital = {'Label':[1,2,3,4], 'Description':['Male: Divorced / Living apart', 'Male: Single', 'Male: Married / Widowed', 'Female']}
+        create_table('Martial Status / Sex', data_marital)
 
-        data_gurantor = {'Further debtors / Guarantors': [1,2,3], 'Description':['none', 'Co-Applicant', 'Guarantor']}
-        Gurantor = pd.DataFrame(data_gurantor)
-        st.dataframe(Gurantor, hide_index=True, use_container_width=True, height=200)
-    
+        data_guarantor = {'Label': [1,2,3], 'Description':['None', 'Co-Applicant', 'Guarantor']}
+        create_table('Further debtors / Guarantors', data_guarantor)
     with col_2:
-        data_living = {'Living in current household for':[1,2,3,4], 'Description':['< 1 year', '1 <= years < 4', '4 <= years < 7', '>= 7 years']}
-        Living = pd.DataFrame(data_living)
-        st.dataframe(Living, hide_index=True, use_container_width=True, height=200)
+        data_living = {'Label':[1,2,3,4], 'Description':['Less than 1 year', '1-4 years', '4-7 years', 'More than 7 years']}
+        create_table('Living in current household for', data_living)
         
-        data_asset ={'Most valuable available assets':[1,2,3,4], 'Description':['not available / no assets', 'Car / Other', 'Savings contract with a building society / Life insurance', 'Ownership of house or land']}
-        Asset = pd.DataFrame(data_asset)
-        st.dataframe(Asset, hide_index=True, use_container_width=True, height=200)
+        data_asset = {'Label':[1,2,3,4], 'Description':['Not available / No assets', 'Car / Other', 'Savings contract with a building society / Life insurance', 'Ownership of house or land']}
+        create_table('Most valuable available assets', data_asset)
         
-        data_age = {'Age in years':[1,2,3,4,5], 'Description':['0 <= Age <= 25', '26 <= Age <= 39', '40 <= Age <= 59', '>= 65 Age', '60 <= Age <= 64']}
-        Age = pd.DataFrame(data_age)
-        st.dataframe(Age, hide_index=True, use_container_width=True, height=200)
+        data_age = {'Label':[1,2,3,4,5], 'Description':['0-25', '26-39', '40-59', '60-64', 'Above 65']}
+        create_table('Age in years', data_age)
         
-        data_running = {'Further running credits':[1,2,3], 'Description':['at other banks', 'at department store or mail order house', 'no further running credits']}
-        Running = pd.DataFrame(data_running)
-        st.dataframe(Running, hide_index=True, use_container_width=True, height=200)
+        data_running = {'Label':[1,2,3], 'Description':['At other banks', 'At department store or mail order house', 'No further running credits']}
+        create_table('Further running credits', data_running)
         
-        data_apartment ={'Type of apartment':[1,2,3], 'Description':['free apartment', 'rented flat', 'owner-occupied flat']}
-        Aparterment = pd.DataFrame(data_apartment)
-        st.dataframe(Aparterment, hide_index=True, use_container_width=True, height=200)
+        data_apartment = {'Label':[1,2,3], 'Description':['Free apartment', 'Rented flat', 'Owner-occupied flat']}
+        create_table('Type of apartment', data_apartment)
         
-        data_prev_running = {'Number of previous credits at this bank (including the running one)': [1,2,3,4], 'Description':['one', 'two or three', 'four or five', 'six or more']}
-        Prev_Running = pd.DataFrame(data_prev_running)
-        st.dataframe(Prev_Running, hide_index=True, use_container_width=True, height=200)
+        data_prev_running = {'Label': [1,2,3,4], 'Description':['One', 'Two or Three', 'Four or Five', 'Six or more']}
+        create_table('Number of previous credits at this bank', data_prev_running)
         
-        data_occupation = {'Occupation':[1,2,3,4], 'Description':['unemployed / unskilled with no permanent residence', 'unskilled with permanent residence', 'skilled worker / skilled employee / minor civil servant', 'executive / self-employed / higher civil servant']}
-        Occupation = pd.DataFrame(data_occupation)
-        st.dataframe(Occupation, hide_index=True, use_container_width=True, height=200)
+        data_occupation = {'Label':[1,2,3,4], 'Description':['Unemployed / Unskilled with no permanent residence', 'Unskilled with permanent residence', 'Skilled worker / Skilled employee / Minor civil servant', 'Executive / Self-employed / Higher civil servant']}
+        create_table('Occupation', data_occupation)
         
-        data_entitled = {'Number of persons entitled to maintenance':[1,2], 'Description':['3 and more', '0 to 2']}
-        Entitled = pd.DataFrame(data_entitled)
-        st.dataframe(Entitled, hide_index=True, use_container_width=True, height=200)
+        data_entitled = {'Label':[1,2], 'Description':['3 and more', '0-2']}
+        create_table('Number of persons entitled to maintenance', data_entitled)
         
-        data_telephone ={'Telephone':[1,2], 'Description':['no', 'yes']}
-        Telephone = pd.DataFrame(data_telephone)
-        st.dataframe(Telephone, hide_index=True, use_container_width=True, height=200)
+        data_telephone = {'Label':[1,2], 'Description':['No', 'Yes']}
+        create_table('Telephone', data_telephone)
         
-        data_foreign = {'Foreign worker':[1,2], 'Description':['yes', 'no']}
-        Foriegn = pd.DataFrame(data_foreign)
-        st.dataframe(Foriegn, hide_index=True, use_container_width=True, height=200)
+        data_foreign = {'Label':[1,2], 'Description':['Yes', 'No']}
+        create_table('Foreign worker', data_foreign)
     
 def main():
     st.title("Data Encoding")
+    st.info('Currency in Deutsche Mark DM', icon='ℹ️')
     init()
     
     

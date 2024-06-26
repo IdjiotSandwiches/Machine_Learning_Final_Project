@@ -1,14 +1,4 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import pickle
-import time
-import os
-
-st.set_page_config(
-	page_title="Prediction Demo",
-	layout="wide"
-)
+from config import *
 
 def load_data(is_user_model, is_user_scaler):
 	if is_user_model:
@@ -19,7 +9,7 @@ def load_data(is_user_model, is_user_scaler):
 	if is_user_scaler:
 		scaler = load_user_scaler()
 	else:
-		scaler = load_default_scaler()
+		scaler = load_default_scaler()	
 	return model, scaler
 
 def load_default_model():
@@ -155,7 +145,7 @@ def form():
 				index=0,
 	 		)
 
-		submitted = st.form_submit_button('Predict')
+		submitted = st.form_submit_button('Predict', use_container_width=True, type='primary')
 	if submitted:
 		df = [[
 			['No Account', 'No Balance', 'Below 200DM', '200DM or Above'].index(acc_balance)+1,
@@ -193,49 +183,76 @@ def is_folder_empty(folder_path):
 	dir = os.listdir(folder_path)
 	return True if not dir else False
 
-def main():
-	is_user_model_empty, is_user_scaler_empty = is_folder_empty('model/user_trained'), is_folder_empty('scaler/user_trained')
-	st.header('Choose your own model and scaler')
-	st.warning('*If has not train a model the button will be disabled')
-	st.warning('*Default model: Random Forest Classifier, Default scaler: Standard Scaler')
+def toggle_user_model_scaler():
 	col_model, col_scaler =  st.columns(2)
 	with col_model:
-		is_user_model = st.toggle('Use your trained model', disabled=is_user_model_empty)
+		is_user_model = st.toggle('Use your trained model', disabled=is_folder_empty('model/user_trained'))
 	with col_scaler:
-		is_user_scaler = st.toggle('Use your trained scaler', disabled=is_user_scaler_empty)
+		is_user_scaler = st.toggle('Use your trained scaler', disabled=is_folder_empty('scaler/user_trained'))
+	return is_user_model, is_user_scaler
+
+def model_scaler_selection():
+	is_user_model, is_user_scaler = toggle_user_model_scaler()
 
 	MODELS, SCALERS = load_data(
 		is_user_model=is_user_model,
 		is_user_scaler=is_user_scaler
 	)
 
-	model = MODELS if not is_user_model else st.selectbox(
+	model = MODELS if not is_user_model else MODELS[st.selectbox(
 		'Choose your model',
 		MODELS.keys()
-	)
+	)]
 
-	scaler = SCALERS if not is_user_scaler else st.selectbox(
+	scaler = SCALERS if not is_user_scaler else SCALERS[st.selectbox(
 		'Choose your scaler',
 		SCALERS.keys()
-	)
+	)]
 
-	st.header('Loan Approval')
-	col_form, col_prediction = st.columns(2)
-	with col_form:
-		df = form()
+	return model, scaler
 
-	with col_prediction:
-		st.write('Creditability')
-		if df is not None:
-			prediction = predict_creditability(
-				model=MODELS if not is_user_model else MODELS[model], 
-				scaler=SCALERS if not is_user_scaler else SCALERS[scaler], 
-				df=df)
-			if prediction == 0:
-				st.warning('Not eligible')
-			else:
-				st.success('Eligible')
+def prediction_section(model, scaler):
+	st.header('Demo :pushpin:', divider='grey')
+	df = form()
+	if df is not None:
+		prediction = predict_creditability(
+			model=model, 
+			scaler=scaler, 
+			df=df
+		)
+		modal(prediction)
+		
+@st.experimental_dialog('Prediction Result')
+def modal(prediction):
+	st.subheader('Your creditability prediction:')
+	if prediction == 0:
+		st.error('Not eligible :chart_with_downwards_trend:')
+	else:
+		st.success('Eligible :chart_with_upwards_trend:')
+		
+	st.subheader('Explore other pages:')
+	col_1, col_2, col_3 = st.columns(3)
+	with col_1:
+		if st.button('Home', use_container_width=True):
+			st.switch_page('Home.py')
+	with col_2:
+		if st.button('EDA', use_container_width=True):
+			st.switch_page('pages/1_Exploratory_Data_Analysis.py')
+	with col_3:
+		if st.button('Train Model', use_container_width=True):
+			st.switch_page('pages/4_Train_Your_Model.py')
+
+def main():
+	st.title('Loan Approval :money_with_wings:')
+	st.header('Choose your own model and scaler :black_nib:', divider='grey')
+	st.info(f'''
+		If has not train a model the button will be disabled.\n
+		Default model: **Random Forest Classifier**, Default scaler: **Standard Scaler**.
+	''', icon='ℹ')
+	
+	model, scaler = model_scaler_selection()
+	prediction_section(model, scaler)
 
 if __name__ == '__main__':
+	config = page_config('Prediction Demo')
 	main()
-
