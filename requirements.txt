@@ -1,3 +1,4 @@
 scikit-learn
 mpld3
 seaborn
+plotly
