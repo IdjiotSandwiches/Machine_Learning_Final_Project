@@ -3,8 +3,9 @@ import pandas as pd
 import numpy as np
 import pickle, time, os
 import plotly.express as px
-from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+from PIL import Image
+from plotly.subplots import make_subplots
 from sklearn.utils import resample, shuffle
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
